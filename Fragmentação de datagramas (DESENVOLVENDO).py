@@ -3,63 +3,59 @@
 # Código feito para calcular a fragmentação de datagramas.
 #-------------------------------------------------------------------------
 
+
 quantidade_dados_ini = int(input('\nQuantidade de dados em bytes...: '))
 tamanho_cabecalho    = int(input('Tamanho do cabeçalho em bytes..: '))
 quantidade_enlaces   = int(input('Quantidade de enlaces..........: '))
-mtus = []
+print('\n')
+
+mtus = list()
 for turn in range(quantidade_enlaces):
-    capacidade_mtu = int(input('Informe a MTU dos enlaces: '))
+    capacidade_mtu = int(input(f'Informe a MTU do {turn + 1}° enlace: '))
     mtus.append(capacidade_mtu)
 print('\n', 100 * '-')
 
-lista_de_fragmentos = [] # Lista feita para armazenar informações e para o funcionamento do código.
-                         # Ordem da lista: FRAGMENTO, MORE FRAGMENT, HLEN, DATA, TOTAL LENGTH, OFFSET.
-
 for mtu in mtus:
-    mtu = mtu - 20 # Subtraindo o cabeçalho.
-    mtu = mtu // 8 # Obtendo o offset.
-    offset = mtu
-    mtu = mtu * 8 # Obtendo a quantidade de dados por pacote/datagrama.
+    contador = 1
+    offset =  mtu  = (mtu - tamanho_cabecalho) // 8   # Subtraindo o cabeçalho e descobrindo o offset.
+    area_de_dados  =  mtu * 8   # Obtendo a quantidade de dados por pacote/datagrama.
+
+    dados = list()   # Lista usada para armazenar dados para a fragmentação.
+    if contador == 1:
+        dados.append(quantidade_dados_ini)
     
-    # Quantidade de fragmentos. Resultado fragmentado, adiciona mais um fragmento.
-    quantidade_fragmentos = quantidade_dados_ini // mtu 
-    if quantidade_dados_ini % mtu > 0:
-        quantidade_fragmentos += 1
-    
-    fragmento_salvar = []
+    for index in dados:
+        quantidade_fragmentos = index // area_de_dados   # Quantidade de fragmentos. Resultado decimal, adiciona mais um fragmento.
+        if index % area_de_dados > 0 or quantidade_fragmentos == 0:
+            quantidade_fragmentos += 1
+            
+        print('\n')
+        quantidade_dados = index
+        fragmento = 1
+        offset_do_datagrama = 0
+        dados_para_subir = list()
+        for turn in range(quantidade_fragmentos):   # Descobrindo se haverá mais fragmentos e a quantidade de dados do pacote
+            if quantidade_dados <= area_de_dados:
+                mf = 0
+                dados_do_pacote = quantidade_dados
+            else:
+                mf = 1
+                quantidade_dados -= area_de_dados
+                dados_do_pacote = area_de_dados
 
-    print('\n')
-    quantidade_dados = quantidade_dados_ini
-    fragmento = 1
-    offset_do_datagrama = 0
-    for turn in range(quantidade_fragmentos):
-        # Descobrindo se haverá mais fragmentos e a quantidade de dados do pacote
-        if quantidade_dados <= mtu:
-            mf = 0
-            dados_do_pacote = quantidade_dados
-        else:
-            mf = 1
-            quantidade_dados -= mtu
-            dados_do_pacote = mtu
-        
-        fragmento_interno = []
-        fragmento_interno.append(fragmento)
-        fragmento_interno.append(mf)
-        fragmento_interno.append(tamanho_cabecalho)
-        fragmento_interno.append(dados_do_pacote)
-        fragmento_interno.append(dados_do_pacote + tamanho_cabecalho)
-        fragmento_interno.append(offset_do_datagrama)
+            dados_para_subir.append(dados_do_pacote + tamanho_cabecalho)
 
-        fragmento_salvar.append(fragmento_interno)
+            print(f'\nFRAGMENTO {fragmento}:\n')
+            print(f'MORE FRAGMENT.........: {mf}')
+            print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
+            print(f'DATA (BYTES)..........: {dados_do_pacote}')
+            print(f'TOTAL LENGTH (BYTES)..: {dados_do_pacote + tamanho_cabecalho}')
+            print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
+            print(100 * '-')
 
-        print(f'\nFRAGMENTO {fragmento}:\n')
-        print(f'MORE FRAGMENT.........: {mf}')
-        print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
-        print(f'DATA (BYTES)..........: {dados_do_pacote}')
-        print(f'TOTAL LENGTH (BYTES)..: {dados_do_pacote + tamanho_cabecalho}')
-        print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
-        print(100 * '-')
-        fragmento += 1
-        offset_do_datagrama += offset
-
-    lista_de_fragmentos.append(fragmento_salvar)
+            fragmento += 1
+            offset_do_datagrama += offset
+    contador += 1
+    dados = list()
+    dados.append(dados_para_subir)
+    dados_para_subir = list()
