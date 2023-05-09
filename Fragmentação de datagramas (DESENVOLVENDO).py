@@ -3,7 +3,6 @@
 # Código feito para calcular a fragmentação de datagramas.
 #-------------------------------------------------------------------------
 
-
 quantidade_dados_ini = int(input('\nQuantidade de dados em bytes...: '))
 tamanho_cabecalho    = int(input('Tamanho do cabeçalho em bytes..: '))
 quantidade_enlaces   = int(input('Quantidade de enlaces..........: '))
@@ -13,12 +12,12 @@ mtus = list()
 for turn in range(quantidade_enlaces):
     capacidade_mtu = int(input(f'Informe a MTU do {turn + 1}° enlace: '))
     mtus.append(capacidade_mtu)
-print('\n', 100 * '-')
+print('\n')
+print(100 * '-')
 
 enlace   = 1
-contador = 1
-dados    = [quantidade_dados_ini]  # Lista usada para armazenar dados para a fragmentação. Ela tem seus valores subistituidos a cada laço.
-dados_para_subir = list() #  Lista que substituirá a lista "dados".
+dados    = [quantidade_dados_ini + tamanho_cabecalho]  # Lista usada para armazenar dados para a fragmentação. Ela tem seus valores subistituidos a cada laço.
+dados_para_subir = list()  # Lista que substituirá a lista "dados".
 for mtu in mtus:
     print(f'{enlace}° enlace (MTU de {mtu})\n')
     offset = (mtu - tamanho_cabecalho) // 8   # Subtraindo o cabeçalho e descobrindo o offset.
@@ -33,7 +32,7 @@ for mtu in mtus:
             ultimo_confirmado = True
         if index <= mtu:
             dados_do_pacote = index - tamanho_cabecalho
-            if ultimo_fragmento == True:
+            if ultimo_confirmado == True:
                 mf = 0
             print(f'MORE FRAGMENT.........: {mf}')
             print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
@@ -43,6 +42,7 @@ for mtu in mtus:
             print(100 * '-')
             dados_para_subir.append(index)
         else:
+            index -= tamanho_cabecalho
             while index > 0:
                 if index <= area_de_dados:
                     dados_do_pacote = index
@@ -72,4 +72,4 @@ for mtu in mtus:
     dados_para_subir = list()
 
 
-    # RESOLVER O PROBLEMA DO MORE FRAGMENT E DO OFFSET
+    # RESOLVER O PROBLEMA DO OFFSET
