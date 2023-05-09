@@ -15,47 +15,61 @@ for turn in range(quantidade_enlaces):
     mtus.append(capacidade_mtu)
 print('\n', 100 * '-')
 
+enlace   = 1
+contador = 1
+dados    = [quantidade_dados_ini]  # Lista usada para armazenar dados para a fragmentação. Ela tem seus valores subistituidos a cada laço.
+dados_para_subir = list() #  Lista que substituirá a lista "dados".
 for mtu in mtus:
-    contador = 1
-    offset =  mtu  = (mtu - tamanho_cabecalho) // 8   # Subtraindo o cabeçalho e descobrindo o offset.
-    area_de_dados  =  mtu * 8   # Obtendo a quantidade de dados por pacote/datagrama.
+    print(f'{enlace}° enlace (MTU de {mtu})\n')
+    offset = (mtu - tamanho_cabecalho) // 8   # Subtraindo o cabeçalho e descobrindo o offset.
+    area_de_dados = offset * 8   # Obtendo a quantidade de dados por pacote/datagrama.
 
-    dados = list()   # Lista usada para armazenar dados para a fragmentação.
-    if contador == 1:
-        dados.append(quantidade_dados_ini)
-    
+    mf = 1
+    offset_do_datagrama = 0
+    ultimo_fragmento = dados[-1]
+    ultimo_confirmado = False
     for index in dados:
-        quantidade_fragmentos = index // area_de_dados   # Quantidade de fragmentos. Resultado decimal, adiciona mais um fragmento.
-        if index % area_de_dados > 0 or quantidade_fragmentos == 0:
-            quantidade_fragmentos += 1
-            
-        print('\n')
-        quantidade_dados = index
-        fragmento = 1
-        offset_do_datagrama = 0
-        dados_para_subir = list()
-        for turn in range(quantidade_fragmentos):   # Descobrindo se haverá mais fragmentos e a quantidade de dados do pacote
-            if quantidade_dados <= area_de_dados:
+        if index == ultimo_fragmento:
+            ultimo_confirmado = True
+        if index <= mtu:
+            dados_do_pacote = index - tamanho_cabecalho
+            if ultimo_fragmento == True:
                 mf = 0
-                dados_do_pacote = quantidade_dados
-            else:
-                mf = 1
-                quantidade_dados -= area_de_dados
-                dados_do_pacote = area_de_dados
-
-            dados_para_subir.append(dados_do_pacote + tamanho_cabecalho)
-
-            print(f'\nFRAGMENTO {fragmento}:\n')
             print(f'MORE FRAGMENT.........: {mf}')
             print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
             print(f'DATA (BYTES)..........: {dados_do_pacote}')
-            print(f'TOTAL LENGTH (BYTES)..: {dados_do_pacote + tamanho_cabecalho}')
+            print(f'TOTAL LENGTH (BYTES)..: {index}')
             print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
             print(100 * '-')
+            dados_para_subir.append(index)
+        else:
+            while index > 0:
+                if index <= area_de_dados:
+                    dados_do_pacote = index
+                    total_len = dados_do_pacote + tamanho_cabecalho
+                    index -= index
+                    if ultimo_confirmado == True:
+                        mf = 0
+                else:
+                    index -= area_de_dados
+                    dados_do_pacote = area_de_dados
+                    total_len = area_de_dados + tamanho_cabecalho
+            
+                dados_para_subir.append(total_len)
 
-            fragmento += 1
-            offset_do_datagrama += offset
-    contador += 1
+                print(f'MORE FRAGMENT.........: {mf}')
+                print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
+                print(f'DATA (BYTES)..........: {dados_do_pacote}')
+                print(f'TOTAL LENGTH (BYTES)..: {total_len}')
+                print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
+                print(100 * '-')
+
+                offset_do_datagrama += offset
+    
+    enlace   += 1
     dados = list()
-    dados.append(dados_para_subir)
+    dados = dados_para_subir
     dados_para_subir = list()
+
+
+    # RESOLVER O PROBLEMA DO MORE FRAGMENT E DO OFFSET
