@@ -1,5 +1,3 @@
-# OBS: AINDA ESTOU DESENVOLVENDO A REFRAGMENTAÇÃO. Por enquanto ele só faz os cálculos para uma fragmentação.
-
 # Código feito para calcular a fragmentação de datagramas.
 #-------------------------------------------------------------------------
 
@@ -20,20 +18,19 @@ dados    = [quantidade_dados_ini + tamanho_cabecalho]  # Lista usada para armaze
 dados_para_subir = list()  # Lista que substituirá a lista "dados".
 for mtu in mtus:
     print(f'{enlace}° enlace (MTU de {mtu})\n')
-    offset = (mtu - tamanho_cabecalho) // 8   # Subtraindo o cabeçalho e descobrindo o offset.
-    area_de_dados = offset * 8   # Obtendo a quantidade de dados por pacote/datagrama.
+    area_de_dados = ((mtu - tamanho_cabecalho) // 8) * 8   # Obtendo a quantidade de dados por pacote/datagrama.
 
     mf = 1
-    offset_do_datagrama = 0
-    ultimo_fragmento = dados[-1]
+    dados_do_offset   = 0
     ultimo_confirmado = False
     for index in dados:
-        if index == ultimo_fragmento:
+        if index == dados[-1]:
             ultimo_confirmado = True
         if index <= mtu:
             dados_do_pacote = index - tamanho_cabecalho
             if ultimo_confirmado == True:
                 mf = 0
+            offset_do_datagrama = dados_do_offset // 8
             print(f'MORE FRAGMENT.........: {mf}')
             print(f'HLEN (BYTES)..........: {tamanho_cabecalho}')
             print(f'DATA (BYTES)..........: {dados_do_pacote}')
@@ -41,9 +38,11 @@ for mtu in mtus:
             print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
             print(100 * '-')
             dados_para_subir.append(index)
+            dados_do_offset += dados_do_pacote
         else:
             index -= tamanho_cabecalho
             while index > 0:
+                offset_do_datagrama = dados_do_offset // 8
                 if index <= area_de_dados:
                     dados_do_pacote = index
                     total_len = dados_do_pacote + tamanho_cabecalho
@@ -64,12 +63,9 @@ for mtu in mtus:
                 print(f'FRAGMENT OFFSET.......: {offset_do_datagrama}')
                 print(100 * '-')
 
-                offset_do_datagrama += offset
+                dados_do_offset += dados_do_pacote
     
     enlace   += 1
     dados = list()
     dados = dados_para_subir
     dados_para_subir = list()
-
-
-    # RESOLVER O PROBLEMA DO OFFSET
