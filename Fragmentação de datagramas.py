@@ -1,15 +1,53 @@
 # Código feito para calcular a fragmentação de datagramas.
 #-------------------------------------------------------------------------
 
-quantidade_dados_ini = int(input('\nQuantidade de dados em bytes...: '))
-tamanho_cabecalho    = int(input('Tamanho do cabeçalho em bytes..: '))
-quantidade_enlaces   = int(input('Quantidade de enlaces..........: '))
+import sys
+
+while True:
+    try:
+        quantidade_dados_ini = int(input('\nQuantidade de dados em bytes...: '))
+    except ValueError:
+        print('DIGITE APENAS NÚMEROS.')
+    except:
+        print(f'ERRO...:{sys.exc_info()[0]}')
+    else:
+        break
+
+while True:
+    try:
+        tamanho_cabecalho = int(input('\nTamanho do cabeçalho em bytes..: '))
+    except ValueError:
+        print('DIGITE APENAS NÚMEROS.')
+    except:
+        print(f'ERRO...:{sys.exc_info()[0]}')
+    else:
+        break
+
+while True:
+    try:
+        quantidade_enlaces = int(input('\nQuantidade de enlaces..........: '))
+    except ValueError:
+        print('DIGITE APENAS NÚMEROS.')
+    except:
+        print(f'ERRO...:{sys.exc_info()[0]}')
+    else:
+        break
+
 print('\n')
 
 mtus = list()
 for turn in range(quantidade_enlaces):
-    capacidade_mtu = int(input(f'Informe a MTU do {turn + 1}° enlace: '))
-    mtus.append(capacidade_mtu)
+    while True:
+        try: 
+            capacidade_mtu = int(input(f'Informe a MTU do {turn + 1}° enlace: '))
+        except ValueError:
+            print('DIGITE APENAS NÚMEROS.')
+        except:
+            print(f'ERRO...:{sys.exc_info()[0]}')
+        else:
+            mtus.append(capacidade_mtu)
+            break
+
 print('\n')
 print(100 * '-')
 
