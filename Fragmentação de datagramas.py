@@ -21,10 +21,12 @@ for mtu in mtus:
     area_de_dados = ((mtu - tamanho_cabecalho) // 8) * 8   # Obtendo a quantidade de dados por pacote/datagrama.
 
     mf = 1
+    contador_de_loop  = 1 
+    ultimo_loop       = len(dados)
     dados_do_offset   = 0
     ultimo_confirmado = False
     for index in dados:
-        if index == dados[-1]:
+        if contador_de_loop == ultimo_loop:
             ultimo_confirmado = True
         if index <= mtu:
             dados_do_pacote = index - tamanho_cabecalho
@@ -64,6 +66,7 @@ for mtu in mtus:
                 print(100 * '-')
 
                 dados_do_offset += dados_do_pacote
+        contador_de_loop += 1
     
     enlace   += 1
     dados = list()
