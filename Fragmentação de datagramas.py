@@ -3,50 +3,61 @@
 
 import sys
 
-while True:
-    try:
-        quantidade_dados_ini = int(input('\nQuantidade de dados em bytes...: '))
-    except ValueError:
-        print('DIGITE APENAS NÚMEROS.')
-    except:
-        print(f'ERRO...:{sys.exc_info()[0]}')
-    else:
-        break
+# Todos os dados começam vazios.
+quantidade_dados_ini = tamanho_cabecalho = quantidade_enlaces = protocolo = mensagem = capacidade_mtu = ''
 
-while True:
-    try:
-        tamanho_cabecalho = int(input('\nTamanho do cabeçalho em bytes..: '))
-    except ValueError:
-        print('DIGITE APENAS NÚMEROS.')
-    except:
-        print(f'ERRO...:{sys.exc_info()[0]}')
-    else:
-        break
+# Função criada para evitar a repetição dos mesmos laços na hora de receber os valores.
+# O objetivo dessa função é evitar valores que não correspondem com os cáculos.
+def verificador_de_valor(valor):
+    while True:
+        try:
+            valor = int(input(f'{mensagem}'))
+        except ValueError:
+            print('DIGITE APENAS NÚMEROS.\n')
+        except:
+            print(f'ERRO...:{sys.exc_info()[0]}')
+        else:
+            return valor
+            break
 
+# Descobrindo qual o protocolo que sera usado.
 while True:
-    try:
-        quantidade_enlaces = int(input('\nQuantidade de enlaces..........: '))
-    except ValueError:
-        print('DIGITE APENAS NÚMEROS.')
-    except:
-        print(f'ERRO...:{sys.exc_info()[0]}')
-    else:
+    print('\n1 - IPV4')
+    print('2 - IPV6')
+    mensagem  = 'Qual o protocolo: '
+    protocolo = verificador_de_valor(protocolo)
+    if protocolo == 1 or protocolo == 2:
         break
+    else:
+        print('ESCOLHA APENAS 1 OU 2.')
+
+# Recebendo a quantidade de dados que serão transportados.
+mensagem  = '\nQuantidade de dados: '
+quantidade_dados_ini = verificador_de_valor(quantidade_dados_ini)
+
+# Recebendo o tamanho do cabeçalho. O IPV6 tem um valor fixo de 40.
+if protocolo == 2:
+    tamanho_cabecalho = 40
+else:
+    while True:
+        mensagem  = '\nTamanho do cabeçalho: '
+        tamanho_cabecalho = verificador_de_valor(tamanho_cabecalho)
+        if tamanho_cabecalho >= 20 and tamanho_cabecalho <= 60:
+            break
+        else:
+            print('O cabeçalho do IPV4 fica entre 20 e 60.')
+
+# Recebendo quantos enlaces/nós existem no caminho
+mensagem  = '\nQuantidade de enlaces/nós: '
+quantidade_enlaces = verificador_de_valor(quantidade_enlaces)
 
 print('\n')
 
 mtus = list()
 for turn in range(quantidade_enlaces):
-    while True:
-        try: 
-            capacidade_mtu = int(input(f'Informe a MTU do {turn + 1}° enlace: '))
-        except ValueError:
-            print('DIGITE APENAS NÚMEROS.')
-        except:
-            print(f'ERRO...:{sys.exc_info()[0]}')
-        else:
-            mtus.append(capacidade_mtu)
-            break
+    mensagem  = f'Informe o tamamanho da {turn + 1} MTU: '
+    capacidade_mtu = verificador_de_valor(capacidade_mtu)
+    mtus.append(capacidade_mtu)
 
 print('\n')
 print(100 * '-')
