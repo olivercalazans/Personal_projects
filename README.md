@@ -1,2 +1,2 @@
 # Limbo
-Projetos pessoais.
+Projetos pessoais e códigos que uso frequentemente.
