@@ -1,4 +1,5 @@
 # Esse código descobre o endereço de IP a partir do nome de Host.
+#------------------------------------------------------------------
 
 import socket, sys
 
