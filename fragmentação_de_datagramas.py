@@ -1,5 +1,6 @@
-# Código feito para calcular a fragmentação de datagramas.
-#-------------------------------------------------------------------------
+# Código feito para calcular a fragmentação de datagramas de IPv4 e IPv6. Porém ele faz os cálculos apenas com os 
+# quadros (cabeçalho e dados) de IPv4 e IPv6. Os dados das camadas mais acima e mais abaixo não são incluídas.
+#-------------------------------------------------------------------------------------------------------------------
 
 import sys
 
