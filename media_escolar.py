@@ -1,7 +1,7 @@
-# Esse código recebe os nomes, dos alunos, 4 notas e tira a média das notas. Ao final é possível criar um arquivo
+# Esse código recebe os nomes, dos alunos, 4 notas e tira a média das notas. Ao final é possível criar um arquivo, em excel,
 # com os dados gerados. Antes de escrever, os dados são mostrados para que possam ser conferidos antes de serem salvos.
 
-import sys, os
+import sys, os, openpyxl
 
 # Função para evitar a repetição dos mesmos comandos. ------------------------------------------------------------------
 # Essa função aceita apenas números dentro do limite estabelecido.
@@ -24,16 +24,14 @@ def verificador_valor():
                 return valor
 
 # Área de armazenamento -----------------------------------------------------------------------------------------------
-# "data" - lista que salva os dados de entrada.
-# "data_wrt" - lista usada para salvar todos os dados (incluindo a média) e escrever o arquivo.
+# "data" - lista que salva os dados de entrada. Durante o laço, ela recebe a média das notas informadas.
 
 data     = list()
-data_wrt = list()
 
 # Entrada de dados ----------------------------------------------------------------------------------------------------
 # Recebendo o número da turma/serie.
 limite   = 10
-mensagem = 'Digite o número da turma: '
+mensagem = '\nDigite o número da turma: '
 serie    = verificador_valor()
 
 while True:   # Recebendo os nomes e as 4 notas do aluno e calculando a média.
@@ -55,11 +53,9 @@ for nome in data:
     for dado in nome:  # Laço para descobrir o espaço entre os dados. Isso mantem os dados organizados para a escrita.
         aux = 13 - len(str(dado))
         espaco.append(aux)
-    media = (nome[1] + nome[2] + nome[3] + nome[4]) / 4
+    media = round(((nome[1] + nome[2] + nome[3] + nome[4]) / 4), 1)
     nome.append(media)
-    full_line = f'{nome[0]}{f"." * espaco[0]} {nome[1]}{" " * espaco[1]}|{nome[2]}{" " * espaco[2]}|{nome[3]}{" " * espaco[3]}|{nome[4]}{" " * espaco[4]}|{nome[5]:.1f}'
-    data_wrt.append(full_line)
-    print(full_line)
+    print(f'{nome[0]}{f"." * espaco[0]} {nome[1]}{" " * espaco[1]}|{nome[2]}{" " * espaco[2]}|{nome[3]}{" " * espaco[3]}|{nome[4]}{" " * espaco[4]}|{nome[5]}')
 print('\n')
 print('-' * 100)
 
@@ -89,10 +85,12 @@ if permissao == 'S':
 
     # Criando o arquivo.
     try:
-        with open(DIRETORIO + f'{serie:.0f}° Ano - {bimestre:.0f}° bimestre.txt','w',encoding='utf-8') as escrevendo:
-            escrevendo.write(f'{serie:.0f}° Ano        Nota 1       |Nota 2       |Nota 3       |Nota 4       |Média\n')
-            for dados in data_wrt:
-                escrevendo.write(f'{dados}\n')
+        livro = openpyxl.Workbook()
+        pagina = livro['Sheet']
+        pagina.append(['Alunos','ATV 1','Seminário','Teste','Prova','Média'])
+        for linha in data:
+            pagina.append(linha)
+        livro.save(DIRETORIO + f'{serie:.0f}° Ano, {bimestre:.0f}° Bimestre.xlsx')
     except:
         print(f'\nERRO...:{sys.exc_info()[0]}')
         sys.exit()
