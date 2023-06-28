@@ -26,7 +26,7 @@ def verificador_valor():
 # Área de armazenamento -----------------------------------------------------------------------------------------------
 # "data" - lista que salva os dados de entrada. Durante o laço, ela recebe a média das notas informadas.
 
-data     = list()
+data = list()
 
 # Entrada de dados ----------------------------------------------------------------------------------------------------
 # Recebendo o número da turma/serie.
@@ -46,6 +46,7 @@ while True:   # Recebendo os nomes e as 4 notas do aluno e calculando a média.
     data.append(linha)
 
 # Apresentação --------------------------------------------------------------------------------------------------------
+data.sort(key=lambda sublista: sublista[0])
 print('-' * 100)
 print(f'\n{serie:.0f}° Ano        Nota 1       |Nota 2       |Nota 3       |Nota 4       |Média')
 for nome in data:
