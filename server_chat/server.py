@@ -1,11 +1,11 @@
-import datetime, os, sys, socket
+import datetime, os, sys, socket, threading
 
 
 # ============================================ CONSTANTS =================================================
 
 ALL_CLIENTS = list()
 HISTORY     = list()
-BUFFER      = 2048
+BUFFER      = 1024
 TODAYS_DATE = str(datetime.date.today())
 DIRECTORY   = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,28 +20,39 @@ def creating_folder(folderName):
 def writing_history():
     ...
 
+def register_login(connection, client):
+    while True:
+        registerOrLogin = connection.recv(BUFFER).decode()
+        # Registration
+        if registerOrLogin == '0':
+            while True:
+                nameAndPassword = connection.recv(BUFFER).decode()
+
+
+
 # ========================================================================================================
 
-print('Creating folder for history')
+print('\nCreating folder for history')
 creating_folder('\\HISTORY\\')
 
 print('Creating folder for clients')
 creating_folder('\\CLIENTS\\')
 
 try:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind('0.0.0.0', 50000)
-    sock.listen(5)
+    socketServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socketServer.bind(('0.0.0.0', 50000))
+    socketServer.listen(5)
 except: 
     print(f'\nERRO...:{sys.exc_info()}')
     sys.exit()
-else: print('The server is active\n')
+else: print('\nThe server is active\n')
 
 try:
     while True:
-        connection, client = sock.accept()
-
+        connection, client = socketServer.accept()
+        tREGISTER_LOGIN = threading.Thread(target=register_login, args=(connection, client,))
+        tREGISTER_LOGIN.start()
+        HISTORY.append((TODAYS_DATE, 'connection', client))
 except:
     print(f'\nERRO...:{sys.exc_info()}')
-    sys.exit()
-
+    
