@@ -15,15 +15,15 @@ while True:
         socketClient.send(str(nameAndPassword).encode())
         confirmation = socketClient.recv(BUFFER).decode()
         if confirmation == 'ok':
-            print('Registration completed')
+            print('\nRegistration completed')
         else:
-            print(f'The name "{nameAndPassword[0]}" is not available')
+            print(f'\nThe name "{nameAndPassword[0]}" is not available!!!')
     elif registerOrLogin == '1':
         nameAndPassword = (input('Name: '), input('Password: '))
         socketClient.send(str(nameAndPassword).encode())
         confirmation = socketClient.recv(BUFFER).decode()
         if confirmation == 'ok':
-            print(f'Welcome, {nameAndPassword[0]}')
+            print(f'\nWelcome, {nameAndPassword[0]}')
             break
         else:
-            print('Name or password is wrong')
+            print('\nName or password is wrong!!!')
