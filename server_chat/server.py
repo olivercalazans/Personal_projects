@@ -50,12 +50,17 @@ def register_or_login(connection, client):
         # Registration
         if registerOrLogin == '0':
             nameAndPassword = connection.recv(BUFFER).decode()
-            if nameAndPassword in NAMES_AND_PASSWORDS:
+            found = False
+            for name in NAMES_AND_PASSWORDS:
+                if eval(name)[0] == eval(nameAndPassword)[0]: 
+                    found = True
+                    break
+            if found == True:
                 connection.send('wrong'.encode())
                 HISTORY.append((TODAYS_DATE, 'creating account', 'name unavailable', client))
             else: 
                 NAMES_AND_PASSWORDS.append(nameAndPassword)
-                with open(DIRECTORY + '\\CLIENTS\\' + 'names_and_passwords.txt', 'w', encoding='utf-8') as user: user.write(nameAndPassword)
+                with open(DIRECTORY + '\\CLIENTS\\' + 'names_and_passwords.txt', 'a', encoding='utf-8') as user: user.write(nameAndPassword + '\n')
                 connection.send('ok'.encode())
                 HISTORY.append((TODAYS_DATE, 'creating account', 'registration completed', client))
         # Logging in
