@@ -91,7 +91,7 @@ try:
 except: 
     print(f'\nERRO...:{sys.exc_info()}')
     HISTORY.append((TODAYS_DATE, 'server activation', f'ERRO...:{sys.exc_info()}'))
-    sys.exit()
+    deactivating()
 else:
     print('\nThe server is active\n')
     HISTORY.append((TODAYS_DATE, 'server activation', 'sucessful activation'))
