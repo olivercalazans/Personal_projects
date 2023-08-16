@@ -52,7 +52,6 @@ def register_or_login(connection, client):
             nameAndPassword = connection.recv(BUFFER).decode()
             found = False
             if NAMES_AND_PASSWORDS != ['']:
-                print(NAMES_AND_PASSWORDS)
                 for name in NAMES_AND_PASSWORDS:
                     if name != '' and eval(name)[0] == eval(nameAndPassword)[0]: 
                         found = True
