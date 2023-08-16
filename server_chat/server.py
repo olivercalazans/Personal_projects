@@ -24,7 +24,7 @@ def creator_or_reader(folderName):
                 with open(DIRECTORY + '\\CLIENTS\\' + folderName, 'w'): pass
         elif folderName == 'read_data':
             print('Reading "names_and_passwords.txt"')
-            with open(DIRECTORY + '\\CLIENTS\\' + 'names_and_passwords.txt', 'r', encoding='utf-8') as lines: NAMES_AND_PASSWORDS = lines.readlines()
+            with open(DIRECTORY + '\\CLIENTS\\' + 'names_and_passwords.txt', 'r', encoding='utf-8') as lines: NAMES_AND_PASSWORDS = lines.read().split('\n')
         else: os.mkdir(DIRECTORY + folderName)
     except FileExistsError: 
         print(f'  --> "{folderName}" already exists')
@@ -51,10 +51,12 @@ def register_or_login(connection, client):
         if registerOrLogin == '0':
             nameAndPassword = connection.recv(BUFFER).decode()
             found = False
-            for name in NAMES_AND_PASSWORDS:
-                if eval(name)[0] == eval(nameAndPassword)[0]: 
-                    found = True
-                    break
+            if NAMES_AND_PASSWORDS != ['']:
+                print(NAMES_AND_PASSWORDS)
+                for name in NAMES_AND_PASSWORDS:
+                    if name != '' and eval(name)[0] == eval(nameAndPassword)[0]: 
+                        found = True
+                        break
             if found == True:
                 connection.send('wrong'.encode())
                 HISTORY.append((TODAYS_DATE, 'creating account', 'name unavailable', client))
