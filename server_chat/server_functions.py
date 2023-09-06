@@ -100,10 +100,22 @@ def loggingIn(connection, client):
 
 def forwardingMessages(connection, client):
     while True:
-        message = eval(connection.recv(BUFFER).decode())
-        if message[0] == 'private':
-            ...
-        elif message[0] == 'broadcast':
-            ...
-        elif message == 'quit':
-            ...
+        try:
+            message = eval(connection.recv(BUFFER).decode())
+            if message[0] == 'broadcast':
+                sendingBroadcastMessage()
+            elif message[0] == 'private':
+                sendingPrivateMessage()
+            elif message == 'quit':
+                ...
+        except KeyboardInterrupt as errorType:
+            print(f'\nERROR {errorType}. Abrupt disconnection.')
+            HISTORY.append((str(datetime.datetime.now()), errorType, client, 'abrupt disconnction'))
+        except:
+            print(f'\nERROR...:{sys.exc_info()[0]}')
+
+def sendingPrivateMessage():
+    ...
+
+def sendingBroadcastMessage():
+    ...
