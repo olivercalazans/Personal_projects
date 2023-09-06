@@ -11,7 +11,7 @@ try:
     socketServer.bind(('0.0.0.0', 50000))
     socketServer.listen(5)
 except: 
-    print(f'\nERRO...:{sys.exc_info()}')
+    print(f'\nERROR...:{sys.exc_info()}')
     HISTORY.append((str(datetime.datetime.now()), 'server activation', f'ERRO...:{sys.exc_info()}'))
     deactivating()
 else:
