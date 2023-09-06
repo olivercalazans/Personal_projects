@@ -1,9 +1,10 @@
-import sys, socket, threading
+import sys, socket, threading, datetime
 from functions import *
 
-creatingFoldersAndFile('\\HISTORY\\')
-creatingFoldersAndFile('\\CLIENTS\\')
-creatingFoldersAndFile('names_and_passwords.txt')
+creatingFolders('\\HISTORY\\')
+creatingFolders('\\CLIENTS\\')
+creatingFiles('names_and_passwords.txt')
+creatingFiles(str(datetime.date.today()))
 
 try:
     socketServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -11,17 +12,17 @@ try:
     socketServer.listen(5)
 except: 
     print(f'\nERRO...:{sys.exc_info()}')
-    HISTORY.append((TODAYS_DATE, 'server activation', f'ERRO...:{sys.exc_info()}'))
+    HISTORY.append((str(datetime.datetime.now()), 'server activation', f'ERRO...:{sys.exc_info()}'))
     deactivating()
 else:
     print('\nThe server is active\n')
-    HISTORY.append((TODAYS_DATE, 'server activation', 'sucessful activation'))
+    HISTORY.append((str(datetime.datetime.now()), 'server activation', 'sucessful activation'))
 
 try:
     while True:
         connection, client = socketServer.accept()
         tREGISTER_LOGIN = threading.Thread(target=loggingInOrCreatingAnAccount, args=(connection, client,))
         tREGISTER_LOGIN.start()
-        HISTORY.append((TODAYS_DATE, 'connection', client))
+        HISTORY.append((str(datetime.datetime.now()), 'connection', client))
 except:
     print(f'\nERROR...:{sys.exc_info()}')
