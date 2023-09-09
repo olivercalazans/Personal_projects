@@ -1,5 +1,5 @@
 import sys, socket, threading, datetime
-from functions import *
+from server_functions import *
 
 creatingFolders('\\HISTORY\\')
 creatingFolders('\\CLIENTS\\')
