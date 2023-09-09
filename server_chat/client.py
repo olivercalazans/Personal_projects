@@ -6,6 +6,7 @@ try:
     socketClient.connect(('localhost', 50000))
 except:
     print(f'\nERROR...:{sys.exc_info()}')
+    sys.exit()
 else:
     print('\nConnected to the server')
 
@@ -19,6 +20,8 @@ while True:
             confirmation = tryingToLogIn(socketClient)
             if confirmation == 'finished': break
     except KeyboardInterrupt:
-        ...
+        print('Disconnecting from the server')
+        socketClient.send('force')
+        break
     except:
         ...
