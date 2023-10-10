@@ -1,4 +1,4 @@
-# Limbo
+# Personal_projects
 Projetos pessoais e códigos que uso frequentemente.
 Abaixo segue uma pequena descrição de cada código. Dentro de cada código, no início, há uma descrição mais detalhada
 
