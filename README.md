@@ -4,4 +4,4 @@ Abaixo segue uma pequena descrição de cada código. Dentro de cada código, no
 
 - **media_escolar.py** - Esse código calcula a média escolar e salva um arquivo com as informações geradas.
 
-- **server_chat** - Servidor de chat simples. (DESENVOLVENDO)
+- **server_chat** - Servidor de chat simples.
